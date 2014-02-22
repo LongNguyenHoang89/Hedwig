@@ -1,0 +1,13 @@
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\bin\Debug\TestClient.exe.config
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\bin\Debug\TestClient.exe
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\bin\Debug\TestClient.pdb
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient.csprojResolveAssemblyReference.cache
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\MainWindow.baml
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\MainWindow.g.cs
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\App.g.cs
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient_MarkupCompile.cache
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient.g.resources
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient.Properties.Resources.resources
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient.csproj.GenerateResource.Cache
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient.exe
+C:\Users\Long\git\Hedwig\src\Harry\TestClient\TestClient\obj\Debug\TestClient.pdb
