@@ -130,7 +130,7 @@
 
         <!-- Hedwig -->
         <activity
-            android:name="fi.aalto.cse.hedwig.RelayServerActivity"
+            android:name="fi.aalto.cse.hedwig.activity.RelayServerActivity"
             android:label="@string/title_activity_relay_server" >
         </activity>
     </application>

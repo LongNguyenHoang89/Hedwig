@@ -42,7 +42,7 @@ import com.parrot.freeflight.transcodeservice.TranscodingService;
 import com.parrot.freeflight.updater.FirmwareUpdateService;
 import com.parrot.freeflight.utils.GPSHelper;
 
-import fi.aalto.cse.hedwig.RelayServerActivity;
+import fi.aalto.cse.hedwig.activity.RelayServerActivity;
 
 public class DashboardActivity extends DashboardActivityBase 
 implements 
