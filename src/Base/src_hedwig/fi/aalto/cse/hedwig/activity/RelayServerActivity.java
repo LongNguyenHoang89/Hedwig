@@ -7,32 +7,41 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.parrot.freeflight.R;
+import com.parrot.freeflight.receivers.DroneReadyReceiver;
+import com.parrot.freeflight.receivers.DroneReadyReceiverDelegate;
 import com.parrot.freeflight.service.DroneControlService;
 
 import fi.aalto.cse.hedwig.Constant;
+import fi.aalto.cse.hedwig.HedwigLog;
 import fi.aalto.cse.hedwig.controller.DroneController;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.widget.TextView;
 
 /**
  * Code was adapted partly from
  * com.parrot.freeflight.activities.ControlDroneActivity
+ * com.parrot.freeflight.activities.ConnectActivity
+ * 
+ * Main Activity for Hedwig. 
  * 
  * @author Long
  * @see http 
  *      ://examples.javacodegeeks.com/android/core/socket-core/android-socket
  *      -example
  */
-public class RelayServerActivity extends Activity implements ServiceConnection {
+public class RelayServerActivity extends Activity implements ServiceConnection,
+	DroneReadyReceiverDelegate {
 
     // We need a socket to keep connection
     private ServerSocket serverSocket;
@@ -48,6 +57,9 @@ public class RelayServerActivity extends Activity implements ServiceConnection {
     // drone controller
     private DroneController controller;
 
+    // Receiver
+    private BroadcastReceiver droneReadyReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
@@ -62,7 +74,16 @@ public class RelayServerActivity extends Activity implements ServiceConnection {
 	this.serverThread = new Thread(new ServerThread());
 	this.serverThread.start();
 
-	// Bind to service
+	// Register this receiver so we will receive event whenever the drone is
+	// ready
+	droneReadyReceiver = new DroneReadyReceiver(this);
+	LocalBroadcastManager manager = LocalBroadcastManager
+		.getInstance(getApplicationContext());
+	manager.registerReceiver(droneReadyReceiver, new IntentFilter(
+		DroneControlService.DRONE_STATE_READY_ACTION));
+
+	// Bind to drone control service. We'll send command to this service to
+	// control the drone.
 	bindService(new Intent(this, DroneControlService.class), this,
 		Context.BIND_AUTO_CREATE);
     }
@@ -76,6 +97,7 @@ public class RelayServerActivity extends Activity implements ServiceConnection {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+	// Connected to drone control service
 	droneControlService = ((DroneControlService.LocalBinder) service)
 		.getService();
 	droneControlService.resume();
@@ -86,6 +108,15 @@ public class RelayServerActivity extends Activity implements ServiceConnection {
     public void onServiceDisconnected(ComponentName name) {
 	// TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void onDroneReady() {
+	HedwigLog.logFunction(this, "onDroneReady");
+	// Drone is ready, we start new activity to render stream from camera
+	Intent droneControlActivity = new Intent(this,
+		VideoStreamActivity.class);
+	startActivity(droneControlActivity);
     }
 
     class ServerThread implements Runnable {
@@ -162,7 +193,7 @@ public class RelayServerActivity extends Activity implements ServiceConnection {
 		    + "\n");
 
 	    // This is only for test
-	    controller.fly(null);
+	    // controller.fly(null);
 	}
     }
 

@@ -18,12 +18,15 @@ public class DroneController {
 	this.droneControlService = service;
     }
 
-    public void fly(View view) {
+    /**
+     * Take off
+     */
+    public void fly() {
 	droneControlService.triggerTakeOff();
 	
 	//Set this first, else the drone won't flight
-	droneControlService.setProgressiveCommandEnabled(true);
-	
+	//droneControlService.setProgressiveCommandEnabled(true);
+	/*
 	try {
 	    Thread.sleep(10000);
 	    droneControlService.moveForward(0.1f);
@@ -39,9 +42,13 @@ public class DroneController {
 	} finally {
 	    droneControlService.triggerTakeOff();
 	}
+	*/
     }
 
-    public void drop(View view) {
+    /**
+     * @param view
+     */
+    public void drop() {
 	droneControlService.triggerEmergency();
     }
 }

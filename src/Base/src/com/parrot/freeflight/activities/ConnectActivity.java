@@ -29,6 +29,9 @@ import com.parrot.freeflight.receivers.DroneReadyReceiverDelegate;
 import com.parrot.freeflight.service.DroneControlService;
 import com.parrot.freeflight.utils.SystemUtils;
 
+import fi.aalto.cse.hedwig.Constant;
+import fi.aalto.cse.hedwig.HedwigLog;
+
 public class ConnectActivity
         extends ParrotActivity
         implements ServiceConnection, DroneReadyReceiverDelegate, DroneConnectionChangeReceiverDelegate
@@ -153,6 +156,7 @@ public class ConnectActivity
 
     private void onOpenHudScreen()
     {
+	HedwigLog.logFunction(this, "onOpenHudScreen");
         Intent droneControlActivity = new Intent(ConnectActivity.this, ControlDroneActivity.class);
         droneControlActivity.putExtra("USE_SOFTWARE_RENDERING", false);
         droneControlActivity.putExtra("FORCE_COMBINED_CONTROL_MODE", false);
@@ -174,7 +178,7 @@ public class ConnectActivity
         } else {
             final CheckBox autoSkip = (CheckBox) this.findViewById(R.id.auto_skip);
             
-            if (autoSkip.isChecked()) {
+            if (autoSkip.isChecked()) {        	
                 onOpenHudScreen();
             }
             

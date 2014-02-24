@@ -133,6 +133,10 @@
             android:name="fi.aalto.cse.hedwig.activity.RelayServerActivity"
             android:label="@string/title_activity_relay_server" >
         </activity>
+        
+        <activity
+            android:name="fi.aalto.cse.hedwig.activity.VideoStreamActivity">
+        </activity>
     </application>
 
 </manifest>
