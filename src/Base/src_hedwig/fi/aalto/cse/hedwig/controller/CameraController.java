@@ -1,21 +1,21 @@
 package fi.aalto.cse.hedwig.controller;
 
-import com.parrot.freeflight.video.VideoStageRenderer;
-
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import fi.aalto.cse.hedwig.HedwigLog;
 import fi.aalto.cse.hedwig.activity.VideoStreamActivity;
+import fi.aalto.cse.hedwig.video.VideoRenderer;
 
 public class CameraController {
 
     // Activity calling this controllers
     private Activity context;
     
-    // Open GL view for the video - testing purpose, we'll stream it anyway
+    // View for the video - testing purpose, we'll stream it anyway
     private GLSurfaceView glView;
     
-    private VideoStageRenderer renderer;
+    // Renderer of video - important
+    private VideoRenderer renderer;
     
     /**
      * @param videoStreamActivity
@@ -29,7 +29,7 @@ public class CameraController {
 	context.setContentView(glView);
 	
 	// Init video renderer
-	renderer = new VideoStageRenderer(context, null);
+	renderer = new VideoRenderer(context, null);
 	initGLSurfaceView();
     }
     

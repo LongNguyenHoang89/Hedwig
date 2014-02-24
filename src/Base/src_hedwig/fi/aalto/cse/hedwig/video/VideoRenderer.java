@@ -14,8 +14,11 @@ import android.util.Log;
 
 import com.parrot.freeflight.ui.gl.GLBGVideoSprite;
 
+import fi.aalto.cse.hedwig.HedwigLog;
+
 /**
  * @author Long
+ * @see http://developer.android.com/guide/topics/graphics/opengl.html
  *
  */
 public class VideoRenderer implements Renderer {
@@ -57,10 +60,6 @@ public class VideoRenderer implements Renderer {
 	bgSprite.setAlpha(1.0f);
     }
 
-    public void onDrawFrame(Canvas canvas) {
-	bgSprite.onDraw(canvas, 0, 0);
-    }
-
     public void onDrawFrame(GL10 gl) {
 	// Limiting framerate in order to save some CPU time
 	endTime = System.currentTimeMillis();
@@ -80,6 +79,7 @@ public class VideoRenderer implements Renderer {
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+	HedwigLog.logFunction(this, "onSurfaceChanged - gl");
 	GLES20.glViewport(0, 0, width, height);
 	Matrix.orthoM(mProjMatrix, 0, 0, width, 0, height, 0, 2f);
 
@@ -87,11 +87,8 @@ public class VideoRenderer implements Renderer {
 	bgSprite.onSurfaceChanged(gl, width, height);
     }
 
-    public void onSurfaceChanged(Canvas canvas, int width, int height) {
-	bgSprite.onSurfaceChanged(null, width, height);
-    }
-
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {	
+	HedwigLog.logFunction(this, "onSurfaceCreated");
 	startTime = System.currentTimeMillis();
 
 	GLES20.glEnable(GLES20.GL_BLEND);
@@ -118,6 +115,7 @@ public class VideoRenderer implements Renderer {
     }
 
     public boolean updateVideoFrame() {
+	HedwigLog.logFunction(this, "updateVideoFrame");
 	return bgSprite.updateVideoFrame();
     }
 
