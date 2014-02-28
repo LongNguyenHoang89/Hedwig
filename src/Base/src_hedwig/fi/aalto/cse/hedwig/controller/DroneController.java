@@ -20,9 +20,23 @@ public class DroneController {
 
     public void processCommand(String command)
     {
-	if ("Fly".equalsIgnoreCase(command)){
-	    this.fly();
-	}
+    	String[] values = command.split(":");
+		System.out.println(values[0]);
+		System.out.println(values[1]);
+		if (values[0].equalsIgnoreCase("fly")) {
+			droneControlService.triggerTakeOff();
+			droneControlService.setProgressiveCommandEnabled(true);
+		} else if (values[0].equalsIgnoreCase("forward")) {
+			droneControlService.moveForward(Float.parseFloat(values[1]));
+		} else if (values[0].equalsIgnoreCase("drop")) {
+			droneControlService.triggerTakeOff();
+		} else if (values[0].equalsIgnoreCase("turnright")) {
+			droneControlService.turnRight(Float.parseFloat(values[1]));
+		} else if (values[0].equalsIgnoreCase("emergency"))  {
+			droneControlService.triggerEmergency();
+		} else if (values[0].equalsIgnoreCase("stop")) {
+			droneControlService.moveForward(0);
+		}
     }
 
     /**
