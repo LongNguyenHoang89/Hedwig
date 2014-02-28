@@ -11,58 +11,94 @@ import com.parrot.freeflight.service.DroneControlService;
  * @see com.parrot.freeflight.activities.ControlDroneActivity
  */
 public class DroneController {
+	public enum CommandList {
+		FLY, FORWARD, MOVERIGHT, MOVELEFT, TURNRIGHT, TURNLEFT, DROP, EMERGENCY, MOVEDOWN, MOVEUP, MOVEBACK;
+	}
 
-    private DroneControlService droneControlService;
+	public boolean isFlying;
 
-    public DroneController(DroneControlService service) {
-	this.droneControlService = service;
-    }
+	private DroneControlService droneControlService;
 
-    public void processCommand(String command)
-    {
-    	String[] values = command.split(":");
+	public DroneController(DroneControlService service) {
+		this.droneControlService = service;
+	}
+
+	public void processCommand(String command) {
+		String[] values = command.split(":");
 		System.out.println(values[0]);
 		System.out.println(values[1]);
-		if (values[0].equalsIgnoreCase("fly")) {
-			droneControlService.triggerTakeOff();
-			droneControlService.setProgressiveCommandEnabled(true);
-		} else if (values[0].equalsIgnoreCase("forward")) {
+		CommandList Comm = CommandList.valueOf(values[0].toUpperCase());
+
+		switch (Comm) {
+		case FLY:
+			if (!isFlying) {
+				System.out.println("send fly");
+				//droneControlService.triggerTakeOff();
+				//droneControlService.setProgressiveCommandEnabled(true);
+				isFlying = true;
+			}
+			break;
+		case FORWARD:
 			droneControlService.moveForward(Float.parseFloat(values[1]));
-		} else if (values[0].equalsIgnoreCase("drop")) {
-			droneControlService.triggerTakeOff();
-		} else if (values[0].equalsIgnoreCase("turnright")) {
+			break;
+		case DROP:
+			if (isFlying) {
+				//droneControlService.triggerTakeOff();
+				System.out.println("send drop");
+			}
+			break;
+		case TURNRIGHT:
 			droneControlService.turnRight(Float.parseFloat(values[1]));
-		} else if (values[0].equalsIgnoreCase("emergency"))  {
+			break;
+		case TURNLEFT:
+			droneControlService.turnLeft(Float.parseFloat(values[1]));
+			break;
+		case EMERGENCY:
 			droneControlService.triggerEmergency();
-		} else if (values[0].equalsIgnoreCase("stop")) {
-			droneControlService.moveForward(0);
+			break;
+		case MOVERIGHT:
+			droneControlService.moveRight(Float.parseFloat(values[1]));
+			break;
+		case MOVELEFT:
+			droneControlService.moveLeft(Float.parseFloat(values[1]));
+			break;
+		case MOVEBACK:
+			droneControlService.moveBackward(Float.parseFloat(values[1]));
+			break;
+		case MOVEUP:
+			droneControlService.moveUp(Float.parseFloat(values[1]));
+			break;
+		case MOVEDOWN:
+			droneControlService.moveDown(Float.parseFloat(values[1]));
+			break;
+		default: // Do something?
 		}
-    }
+	}
 
-    /**
-     * Take off
-     */
-    public void fly() {
-	droneControlService.triggerTakeOff();
-
-	// Set this first, else the drone won't flight
-	// droneControlService.setProgressiveCommandEnabled(true);
-	/*
-	 * try { Thread.sleep(10000); droneControlService.moveForward(0.1f);
-	 * Thread.sleep(5000); droneControlService.moveForward(0.05f);
-	 * Thread.sleep(5000); droneControlService.moveForward(0);
-	 * Thread.sleep(5000);
-	 * 
-	 * } catch (InterruptedException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); } finally {
-	 * droneControlService.triggerTakeOff(); }
+	/**
+	 * Take off
 	 */
-    }
+	public void fly() {
+		droneControlService.triggerTakeOff();
 
-    /**
-     * @param view
-     */
-    public void drop() {
-	droneControlService.triggerEmergency();
-    }
+		// Set this first, else the drone won't flight
+		// droneControlService.setProgressiveCommandEnabled(true);
+		/*
+		 * try { Thread.sleep(10000); droneControlService.moveForward(0.1f);
+		 * Thread.sleep(5000); droneControlService.moveForward(0.05f);
+		 * Thread.sleep(5000); droneControlService.moveForward(0);
+		 * Thread.sleep(5000);
+		 * 
+		 * } catch (InterruptedException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } finally {
+		 * droneControlService.triggerTakeOff(); }
+		 */
+	}
+
+	/**
+	 * @param view
+	 */
+	public void drop() {
+		droneControlService.triggerEmergency();
+	}
 }
