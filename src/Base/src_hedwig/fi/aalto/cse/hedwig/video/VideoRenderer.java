@@ -3,10 +3,9 @@ package fi.aalto.cse.hedwig.video;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,9 +14,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.provider.MediaStore;
 import android.util.Log;
-
 import com.parrot.freeflight.ui.gl.GLBGVideoSprite;
-
 import fi.aalto.cse.hedwig.HedwigLog;
 
 /**
@@ -69,14 +66,15 @@ public class VideoRenderer implements Renderer {
 	mContext = context;
     }
 
+    @SuppressLint("WrongCall")
     public void onDrawFrame(GL10 gl) {
 	// Limiting framerate in order to save some CPU time
 	endTime = System.currentTimeMillis();
 	long dt = endTime - startTime;
 
-	if (dt < 1000) // 33
+	if (dt < 33) // 33
 	    try {
-		Thread.sleep(1000 - dt);
+		Thread.sleep(33 - dt);
 	    } catch (InterruptedException e) {
 		e.printStackTrace();
 	    }
@@ -86,14 +84,6 @@ public class VideoRenderer implements Renderer {
 	// Drawing scene
 	bgSprite.onDraw(gl, 0, 0);
 
-	if (count < 5) {
-	    try {
-		test("" + endTime + ".png");
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
-	}
     }
 
     private void test(String filename) throws IOException {

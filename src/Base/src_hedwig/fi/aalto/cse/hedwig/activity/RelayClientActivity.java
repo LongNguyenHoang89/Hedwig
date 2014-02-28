@@ -68,9 +68,6 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 	// Get text viewer
 	text = (TextView) findViewById(R.id.testTxt);
 
-	// Fork a new thread for client
-	new Thread(new ClientThread()).start();
-
 	// Register this receiver so we will receive event whenever the drone is
 	// ready
 	droneReadyReceiver = new DroneReadyReceiver(this);
@@ -114,31 +111,36 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 	Intent droneControlActivity = new Intent(this,
 		VideoStreamActivity.class);
 	startActivity(droneControlActivity);
+	// Fork a new thread for client
+	new Thread(new ClientThread()).start();
     }
 
     class ClientThread implements Runnable {
 	@Override
 	public void run() {
-	    try {
-		InetAddress serverAddr = InetAddress
-			.getByName(Constant.SERVER_IP);
+	    HedwigLog.logFunction(this, "Run");
+	    try {		
+		InetAddress serverAddr = InetAddress.getByName(Constant.SERVER_IP);
 
 		clientSocket = new Socket(serverAddr, Constant.SERVERPORT);
+		HedwigLog.log(clientSocket.getRemoteSocketAddress().toString());
 		socketOut = new PrintWriter(clientSocket.getOutputStream(),
 			true);
 		socketIn = new BufferedReader(new InputStreamReader(
 			clientSocket.getInputStream()));
 
+		socketOut.write("test");
 		String command;
+		/*
 		while ((command = socketIn.readLine()) != null) {
 		    System.out.println("Server: " + socketIn);
 		    controller.processCommand(command);
-		}
+		}*/
 
 	    } catch (UnknownHostException e1) {
-		e1.printStackTrace();
+		HedwigLog.log(e1.getMessage());
 	    } catch (IOException e1) {
-		e1.printStackTrace();
+		HedwigLog.log(e1.getMessage());
 	    }
 
 	}
