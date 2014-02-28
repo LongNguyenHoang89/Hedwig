@@ -18,31 +18,31 @@ public class DroneController {
 	this.droneControlService = service;
     }
 
+    public void processCommand(String command)
+    {
+	if ("Fly".equalsIgnoreCase(command)){
+	    this.fly();
+	}
+    }
+
     /**
      * Take off
      */
     public void fly() {
 	droneControlService.triggerTakeOff();
-	
-	//Set this first, else the drone won't flight
-	//droneControlService.setProgressiveCommandEnabled(true);
+
+	// Set this first, else the drone won't flight
+	// droneControlService.setProgressiveCommandEnabled(true);
 	/*
-	try {
-	    Thread.sleep(10000);
-	    droneControlService.moveForward(0.1f);
-	    Thread.sleep(5000);
-	    droneControlService.moveForward(0.05f);
-	    Thread.sleep(5000);
-	    droneControlService.moveForward(0);
-	    Thread.sleep(5000);
-	    
-	} catch (InterruptedException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} finally {
-	    droneControlService.triggerTakeOff();
-	}
-	*/
+	 * try { Thread.sleep(10000); droneControlService.moveForward(0.1f);
+	 * Thread.sleep(5000); droneControlService.moveForward(0.05f);
+	 * Thread.sleep(5000); droneControlService.moveForward(0);
+	 * Thread.sleep(5000);
+	 * 
+	 * } catch (InterruptedException e) { // TODO Auto-generated catch block
+	 * e.printStackTrace(); } finally {
+	 * droneControlService.triggerTakeOff(); }
+	 */
     }
 
     /**

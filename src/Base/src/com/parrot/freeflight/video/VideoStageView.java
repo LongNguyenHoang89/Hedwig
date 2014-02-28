@@ -1,6 +1,5 @@
 package com.parrot.freeflight.video;
 
-import fi.aalto.cse.hedwig.HedwigLog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,7 +39,6 @@ public class VideoStageView extends SurfaceView implements
 
     @Override
     protected void onDraw(Canvas canvas) {
-	HedwigLog.logFunction(this, "onDraw");
 	if (renderer != null) {
 	    renderer.onDrawFrame(canvas);
 	} else
@@ -93,7 +91,6 @@ public class VideoStageView extends SurfaceView implements
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-	HedwigLog.logFunction(this, "surfaceCreated");
 	
 	invalidateThread = new DrawThread(getHolder(), this);
 	invalidateThread.setRunning(true);

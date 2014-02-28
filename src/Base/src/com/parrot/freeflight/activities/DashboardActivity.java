@@ -43,7 +43,7 @@ import com.parrot.freeflight.updater.FirmwareUpdateService;
 import com.parrot.freeflight.utils.GPSHelper;
 
 import fi.aalto.cse.hedwig.HedwigLog;
-import fi.aalto.cse.hedwig.activity.RelayServerActivity;
+import fi.aalto.cse.hedwig.activity.RelayClientActivity;
 
 public class DashboardActivity extends DashboardActivityBase implements
 	ServiceConnection, DroneAvailabilityDelegate,
@@ -228,7 +228,7 @@ public class DashboardActivity extends DashboardActivityBase implements
 
     @Override
     protected boolean onStartHedWig() {
-	Intent intent = new Intent(this, RelayServerActivity.class);
+	Intent intent = new Intent(this, RelayClientActivity.class);
 	// intent.setClassName(this, RelayServerActivity.class);
 	startActivity(intent);
 	return true;

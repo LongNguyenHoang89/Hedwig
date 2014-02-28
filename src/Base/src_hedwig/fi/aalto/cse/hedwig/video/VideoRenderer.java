@@ -1,5 +1,8 @@
-
 package fi.aalto.cse.hedwig.video;
+
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -10,6 +13,7 @@ import android.graphics.Canvas;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.parrot.freeflight.ui.gl.GLBGVideoSprite;
@@ -19,7 +23,7 @@ import fi.aalto.cse.hedwig.HedwigLog;
 /**
  * @author Long
  * @see http://developer.android.com/guide/topics/graphics/opengl.html
- *
+ * 
  */
 public class VideoRenderer implements Renderer {
 
@@ -53,11 +57,16 @@ public class VideoRenderer implements Renderer {
 
     private long endTime;
 
+    private Context mContext;
+
+    private int count = 1;
+
     // ***********************
 
     public VideoRenderer(Context context, Bitmap initialTexture) {
 	bgSprite = new GLBGVideoSprite(context.getResources());
 	bgSprite.setAlpha(1.0f);
+	mContext = context;
     }
 
     public void onDrawFrame(GL10 gl) {
@@ -65,9 +74,9 @@ public class VideoRenderer implements Renderer {
 	endTime = System.currentTimeMillis();
 	long dt = endTime - startTime;
 
-	if (dt < 33)
+	if (dt < 1000) // 33
 	    try {
-		Thread.sleep(33 - dt);
+		Thread.sleep(1000 - dt);
 	    } catch (InterruptedException e) {
 		e.printStackTrace();
 	    }
@@ -76,6 +85,30 @@ public class VideoRenderer implements Renderer {
 
 	// Drawing scene
 	bgSprite.onDraw(gl, 0, 0);
+
+	if (count < 5) {
+	    try {
+		test("" + endTime + ".png");
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	}
+    }
+
+    private void test(String filename) throws IOException {
+
+	// bos = new BufferedOutputStream(new FileOutputStream(filename));
+	Bitmap bmp = Bitmap.createBitmap(bgSprite.imageWidth,
+		bgSprite.imageHeight, Bitmap.Config.RGB_565);
+	bgSprite.mPixelBuf.rewind();
+	bmp.copyPixelsFromBuffer(bgSprite.mPixelBuf);
+	//bmp.compress(Bitmap.CompressFormat.PNG, 90, bos);
+	MediaStore.Images.Media.insertImage(mContext.getContentResolver(), bmp,
+		filename + ".jpg", "Hedwig");
+	bmp.recycle();
+	count++;
+
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -87,7 +120,7 @@ public class VideoRenderer implements Renderer {
 	bgSprite.onSurfaceChanged(gl, width, height);
     }
 
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {	
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 	HedwigLog.logFunction(this, "onSurfaceCreated");
 	startTime = System.currentTimeMillis();
 
@@ -110,15 +143,12 @@ public class VideoRenderer implements Renderer {
 		-5f, 0, 1f, 0.0f);
     }
 
-    public float getFPS() {
-	return fps;
-    }
-
-    public boolean updateVideoFrame() {
-	HedwigLog.logFunction(this, "updateVideoFrame");
-	return bgSprite.updateVideoFrame();
-    }
-
+    /*
+     * public float getFPS() { return fps; }
+     * 
+     * public boolean updateVideoFrame() { HedwigLog.logFunction(this,
+     * "updateVideoFrame"); return bgSprite.updateVideoFrame(); }
+     */
     private int loadShader(int type, String code) {
 	int shader = GLES20.glCreateShader(type);
 	GLES20.glShaderSource(shader, code);
