@@ -107,12 +107,13 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
     @Override
     public void onDroneReady() {
 	HedwigLog.logFunction(this, "onDroneReady");
+	// Fork a new thread for client
+	//new Thread(new ClientThread()).start();
+	
 	// Drone is ready, we start new activity to render stream from camera
 	Intent droneControlActivity = new Intent(this,
 		VideoStreamActivity.class);
 	startActivity(droneControlActivity);
-	// Fork a new thread for client
-	new Thread(new ClientThread()).start();
     }
 
     class ClientThread implements Runnable {
@@ -129,13 +130,13 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 		socketIn = new BufferedReader(new InputStreamReader(
 			clientSocket.getInputStream()));
 
-		socketOut.write("test");
+		//socketOut.write("test");
 		String command;
-		/*
+		
 		while ((command = socketIn.readLine()) != null) {
 		    System.out.println("Server: " + socketIn);
 		    controller.processCommand(command);
-		}*/
+		}
 
 	    } catch (UnknownHostException e1) {
 		HedwigLog.log(e1.getMessage());

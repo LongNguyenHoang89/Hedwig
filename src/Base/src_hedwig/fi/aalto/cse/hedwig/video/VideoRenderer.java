@@ -86,21 +86,6 @@ public class VideoRenderer implements Renderer {
 
     }
 
-    private void test(String filename) throws IOException {
-
-	// bos = new BufferedOutputStream(new FileOutputStream(filename));
-	Bitmap bmp = Bitmap.createBitmap(bgSprite.imageWidth,
-		bgSprite.imageHeight, Bitmap.Config.RGB_565);
-	bgSprite.mPixelBuf.rewind();
-	bmp.copyPixelsFromBuffer(bgSprite.mPixelBuf);
-	//bmp.compress(Bitmap.CompressFormat.PNG, 90, bos);
-	MediaStore.Images.Media.insertImage(mContext.getContentResolver(), bmp,
-		filename + ".jpg", "Hedwig");
-	bmp.recycle();
-	count++;
-
-    }
-
     public void onSurfaceChanged(GL10 gl, int width, int height) {
 	HedwigLog.logFunction(this, "onSurfaceChanged - gl");
 	GLES20.glViewport(0, 0, width, height);

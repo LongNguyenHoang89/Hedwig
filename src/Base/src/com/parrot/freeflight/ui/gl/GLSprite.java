@@ -7,10 +7,6 @@
 
 package com.parrot.freeflight.ui.gl;
 
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,14 +26,17 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.parrot.freeflight.utils.TextureUtils;
 
 import fi.aalto.cse.hedwig.HedwigLog;
+import fi.aalto.cse.hedwig.sync.ImageQueue;
 
 public class GLSprite {
+
+    private static final String LOG_TAG = GLSprite.class.getSimpleName();
+
     private static final int VERTEX_BUFFER = 0;
     private static final int INDEX_BUFFER = 1;
     private static final String TAG = GLSprite.class.getSimpleName();
@@ -92,9 +91,11 @@ public class GLSprite {
 
     private boolean useWorkaroundsForSDK8 = false;
 
-    public ByteBuffer mPixelBuf;
-
-    private int count = 0;
+    /*
+     * public ByteBuffer mPixelBuf;
+     * 
+     * private int count = 0;
+     */
 
     public GLSprite(Resources resources, int bitmapId) {
 	this(resources, BitmapFactory.decodeResource(resources, bitmapId));
@@ -130,8 +131,10 @@ public class GLSprite {
 
 	currPaint = new Paint();
 
-	mPixelBuf = ByteBuffer.allocateDirect(imageWidth * imageHeight * 4);
-	mPixelBuf.order(ByteOrder.nativeOrder());
+	/*
+	 * mPixelBuf = ByteBuffer.allocateDirect(imageWidth * imageHeight * 4);
+	 * mPixelBuf.order(ByteOrder.nativeOrder());
+	 */
     }
 
     public void init(GL10 gl, int program) {
@@ -349,11 +352,44 @@ public class GLSprite {
 	}
 
 	checkGlError("glDrawElements");
-	
-	mPixelBuf.rewind();
-	GLES20.glReadPixels(0, 0, imageWidth, imageHeight, GLES20.GL_RGB565, GLES20.GL_UNSIGNED_INT, (Buffer) mPixelBuf);
+
+	/* mPixelBuf.rewind(); */
+	// GLES20.glReadPixels(0, 0, imageWidth, imageHeight, GLES20.GL_RGB565,
+	// GLES20.GL_UNSIGNED_INT, (Buffer) mPixelBuf);
+
+	//Push that frame to server
+	exportBitmap();
     }
-    
+
+    // http://stackoverflow.com/questions/3310990/taking-screenshot-of-android-opengl
+    private void exportBitmap() {
+	int screenshotSize = this.width * this.height;
+	ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
+	bb.order(ByteOrder.nativeOrder());
+	GLES20.glReadPixels(0, 0, width, height, GL10.GL_RGBA,
+		GL10.GL_UNSIGNED_BYTE, bb);
+	int pixelsBuffer[] = new int[screenshotSize];
+	bb.asIntBuffer().get(pixelsBuffer);
+	bb = null;
+
+	for (int i = 0; i < screenshotSize; ++i) {
+	    // The alpha and green channels' positions are preserved while the
+	    // red and blue are swapped
+	    pixelsBuffer[i] = ((pixelsBuffer[i] & 0xff00ff00))
+		    | ((pixelsBuffer[i] & 0x000000ff) << 16)
+		    | ((pixelsBuffer[i] & 0x00ff0000) >> 16);
+	}
+
+	Bitmap bitmap = Bitmap.createBitmap(width, height,
+		Bitmap.Config.ARGB_8888);
+	bitmap.setPixels(pixelsBuffer, screenshotSize - width, -width, 0, 0,
+		width, height);
+
+	Log.d(LOG_TAG, "Exporting bitmap file.");
+	ImageQueue.getInstance().addImage(bitmap);
+	Log.d(LOG_TAG, "exported bitmap file.");
+    }
+
     public void onDraw(Canvas canvas, float x, float y) {
 	currPaint.setAlpha((int) (alpha * 255.0f));
 	dstRect.set(srcRect);
