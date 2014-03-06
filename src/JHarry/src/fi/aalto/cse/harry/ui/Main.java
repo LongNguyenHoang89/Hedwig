@@ -44,7 +44,7 @@ public class Main {
      */
     private void initialize() {
 	frame = new JFrame();
-	frame.setBounds(100, 100, 450, 300);
+	frame.setBounds(100, 100, 1005, 724);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	imagePanel = new ImagePanel();
