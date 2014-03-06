@@ -3,8 +3,10 @@ package fi.aalto.cse.hedwig.video;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +16,10 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.provider.MediaStore;
 import android.util.Log;
+
 import com.parrot.freeflight.ui.gl.GLBGVideoSprite;
+
+import fi.aalto.cse.hedwig.Constant;
 import fi.aalto.cse.hedwig.HedwigLog;
 
 /**
@@ -72,9 +77,9 @@ public class VideoRenderer implements Renderer {
 	endTime = System.currentTimeMillis();
 	long dt = endTime - startTime;
 
-	if (dt < 33) // 33
+	if (dt < Constant.FRAME_INTERVAL_IN_MILISECOND) // 33
 	    try {
-		Thread.sleep(33 - dt);
+		Thread.sleep(Constant.FRAME_INTERVAL_IN_MILISECOND - dt);
 	    } catch (InterruptedException e) {
 		e.printStackTrace();
 	    }

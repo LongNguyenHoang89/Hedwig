@@ -10,5 +10,5 @@ public class Constant {
     public static final int VIDEOPORT = 7777;
     public static final String HEDWIGTAG  = "Hedwig";
     public static final String HEDWIGFUNCTIONTAG  = "Hedwig_Function";
-    public static final int MAX_IMAGE_BUFFER = 10;
+    public static final int FRAME_INTERVAL_IN_MILISECOND = 33;
 }
