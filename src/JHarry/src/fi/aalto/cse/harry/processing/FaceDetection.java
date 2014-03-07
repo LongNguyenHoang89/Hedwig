@@ -40,7 +40,7 @@ public class FaceDetection {
 	// MatOfRect is a special container class for Rect.
 	//long start_time = System.nanoTime();
 	MatOfRect faceDetections = new MatOfRect();
-	face_cascade.detectMultiScale(image, faceDetections);
+	//face_cascade.detectMultiScale(image, faceDetections);
 
 	// Draw a bounding box around each face.
 	for (Rect rect : faceDetections.toArray()) {
