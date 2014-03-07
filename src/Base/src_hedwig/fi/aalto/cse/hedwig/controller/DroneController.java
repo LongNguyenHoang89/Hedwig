@@ -1,8 +1,12 @@
 package fi.aalto.cse.hedwig.controller;
 
+import java.util.Arrays;
+
 import android.view.View;
 
 import com.parrot.freeflight.service.DroneControlService;
+
+import fi.aalto.cse.hedwig.Command;
 
 /**
  * Hedwig controlling library for the drone.
@@ -23,8 +27,50 @@ public class DroneController {
 		this.droneControlService = service;
 	}
 
-	public void processCommand(String command) {
-		String[] values = command.split(":");
+	public void processCommand(int command, float commandValue) {
+		switch(command) {
+		case 0:
+			droneControlService.triggerTakeOff();
+			break;
+		case 1:
+			droneControlService.triggerTakeOff();
+			droneControlService.setProgressiveCommandEnabled(true);
+			break;
+		case 2:
+			droneControlService.moveForward(0);
+			droneControlService.setYaw(0);
+			break;
+		case 21:
+			droneControlService.moveForward(commandValue);
+			break;
+		case 12:
+			droneControlService.turnRight(commandValue);
+			break;
+		case 11:
+			droneControlService.turnLeft(commandValue);
+			break;
+		case 5:
+			droneControlService.moveRight(commandValue);
+			break;
+		case 6:
+			droneControlService.moveLeft(commandValue);
+			break;
+		case 7:
+			droneControlService.moveBackward(commandValue);
+			break;
+		case 8:
+			droneControlService.moveUp(commandValue);
+			break;
+		case 9:
+			droneControlService.moveDown(commandValue);
+			break;
+		case 99:
+			droneControlService.triggerEmergency();
+			break;
+		
+		}
+		/*
+		String[] values = buff.split(":");
 		System.out.println(values[0]);
 		System.out.println(values[1]);
 		CommandList Comm = CommandList.valueOf(values[0].toUpperCase());
@@ -73,6 +119,7 @@ public class DroneController {
 			break;
 		default: // Do something?
 		}
+		*/
 	}
 
 	/**
