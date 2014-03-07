@@ -40,7 +40,7 @@ public class FaceDetection {
 	// MatOfRect is a special container class for Rect.
 	//long start_time = System.nanoTime();
 	MatOfRect faceDetections = new MatOfRect();
-	//face_cascade.detectMultiScale(image, faceDetections);
+	face_cascade.detectMultiScale(image, faceDetections);
 
 	// Draw a bounding box around each face.
 	for (Rect rect : faceDetections.toArray()) {
@@ -54,6 +54,7 @@ public class FaceDetection {
 	return MatToBufferedImage(image);
     }
 
+    
     // http://answers.opencv.org/question/10344/opencv-java-load-image-to-gui/
     public BufferedImage MatToBufferedImage(Mat m) {
 	int type = BufferedImage.TYPE_BYTE_GRAY;
