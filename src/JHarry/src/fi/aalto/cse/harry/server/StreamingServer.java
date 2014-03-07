@@ -17,7 +17,6 @@ public class StreamingServer implements Runnable {
     private Socket clientSocket;
 
     public DataInputStream in;
-    private byte[] pictureBuffer;
 
     /**
      * default constructor
@@ -40,12 +39,11 @@ public class StreamingServer implements Runnable {
 	try {
 	    // Read size first
 	    int size = in.readInt();
-	    //System.out.println(size);
+	    // System.out.println(size);
+	    
 	    // Now get the picture
-	    if (pictureBuffer == null || pictureBuffer.length != size) {
-		// cache this so we don't have to create new buffer
-		pictureBuffer = new byte[size];
-	    }
+	    byte[] pictureBuffer = new byte[size];
+
 	    in.readFully(pictureBuffer);
 
 	    // Now create picture object
@@ -58,25 +56,6 @@ public class StreamingServer implements Runnable {
 	return null;
     }
 
-    public byte[] ReadImageAsByte() {
-	try {
-	    // Read size first
-	    int size = in.readInt();
-	    System.out.println(size);
-	    // Now get the picture
-	    if (pictureBuffer == null || pictureBuffer.length != size) {
-		// cache this so we don't have to create new buffer
-		pictureBuffer = new byte[size];
-	    }
-	    in.readFully(pictureBuffer);
-	    return pictureBuffer;
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	return null;
-    }
-    
 
     @Override
     public void run() {
