@@ -1,6 +1,7 @@
 package fi.aalto.cse.hedwig.activity;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -47,7 +48,7 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
     // We need a socket to keep connection
     private Socket clientSocket;
     private PrintWriter socketOut;
-    private BufferedReader socketIn;
+    private DataInputStream socketIn;
 
     private TextView text;
 
@@ -108,7 +109,7 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
     public void onDroneReady() {
 	HedwigLog.logFunction(this, "onDroneReady");
 	// Fork a new thread for client
-	//new Thread(new ClientThread()).start();
+	new Thread(new ClientThread()).start();
 	
 	// Drone is ready, we start new activity to render stream from camera
 	Intent droneControlActivity = new Intent(this,
@@ -127,16 +128,23 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 		HedwigLog.log(clientSocket.getRemoteSocketAddress().toString());
 		socketOut = new PrintWriter(clientSocket.getOutputStream(),
 			true);
-		socketIn = new BufferedReader(new InputStreamReader(
-			clientSocket.getInputStream()));
-
-		//socketOut.write("test");
-		String command;
 		
+		socketIn = new DataInputStream(clientSocket.getInputStream());
+		
+		int command = -1;
+		float commandValue;
+		while ( ( command = socketIn.readInt()) > -1) {
+			commandValue = socketIn.readFloat();
+			socketIn.readInt();
+			controller.processCommand(command, commandValue);
+		}
+		
+		/*
 		while ((command = socketIn.readLine()) != null) {
 		    System.out.println("Server: " + socketIn);
 		    controller.processCommand(command);
 		}
+		*/
 
 	    } catch (UnknownHostException e1) {
 		HedwigLog.log(e1.getMessage());
