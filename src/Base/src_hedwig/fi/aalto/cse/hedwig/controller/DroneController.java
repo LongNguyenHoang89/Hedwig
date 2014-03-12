@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.parrot.freeflight.service.DroneControlService;
 
-import fi.aalto.cse.hedwig.Command;
+
 
 /**
  * Hedwig controlling library for the drone.

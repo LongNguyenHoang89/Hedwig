@@ -5,7 +5,7 @@ package fi.aalto.cse.hedwig;
  *
  */
 public class Constant {
-    public static final String SERVER_IP = "192.168.1.3";
+    public static final String SERVER_IP = "192.168.1.2";
     public static final int SERVERPORT = 6666;
     public static final int VIDEOPORT = 7777;
     public static final String HEDWIGTAG  = "Hedwig";
