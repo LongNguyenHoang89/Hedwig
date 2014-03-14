@@ -3,10 +3,8 @@ package fi.aalto.cse.harry.worker;
 import java.awt.image.BufferedImage;
 
 import fi.aalto.cse.harry.Constants;
-import fi.aalto.cse.harry.server.DisplayImageInPanelExecutor;
-import fi.aalto.cse.harry.server.FaceDetectionExecutor;
-import fi.aalto.cse.harry.server.ImageQueue;
 import fi.aalto.cse.harry.server.StreamingServer;
+import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.ui.ImagePanel;
 
 /**

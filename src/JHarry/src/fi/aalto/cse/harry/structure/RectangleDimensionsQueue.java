@@ -1,9 +1,7 @@
-package fi.aalto.cse.harry.server;
+package fi.aalto.cse.harry.structure;
 
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import fi.aalto.cse.harry.processing.RectanleDimensions;
 
 /**
  * Stores list of rectangle dimensions where faces were detected.

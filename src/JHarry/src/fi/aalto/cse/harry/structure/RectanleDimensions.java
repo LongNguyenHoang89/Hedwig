@@ -1,4 +1,4 @@
-package fi.aalto.cse.harry.processing;
+package fi.aalto.cse.harry.structure;
 
 public class RectanleDimensions {
 

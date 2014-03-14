@@ -1,4 +1,4 @@
-package fi.aalto.cse.harry.server;
+package fi.aalto.cse.harry.worker;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import fi.aalto.cse.harry.processing.RectanleDimensions;
+import fi.aalto.cse.harry.structure.ImageQueue;
+import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;
+import fi.aalto.cse.harry.structure.RectanleDimensions;
 import fi.aalto.cse.harry.ui.ImagePanel;
 
 public class DisplayImageInPanelExecutor {

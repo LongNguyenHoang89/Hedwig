@@ -1,4 +1,4 @@
-package fi.aalto.cse.harry.server;
+package fi.aalto.cse.harry.structure;
 
 import java.awt.image.BufferedImage;
 import java.util.concurrent.LinkedBlockingQueue;
