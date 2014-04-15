@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
@@ -107,6 +108,11 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 
     @Override
     public void onDroneReady() {
+    // Hedwig uses vertical camera.
+	Log.e("RelayClientActivity", "Switching camera to vertical");
+	droneControlService.switchCamera();
+	Log.e("RelayClientActivity", "Switched camera to vertical");
+    
 	HedwigLog.logFunction(this, "onDroneReady");
 	// Fork a new thread for client
 	new Thread(new ClientThread()).start();
