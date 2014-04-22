@@ -1,33 +1,34 @@
 package fi.aalto.cse.harry.worker;
 
+
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import fi.aalto.cse.harry.imageprocessing.FaceDetection;
+import fi.aalto.cse.harry.imageprocessing.CircleRecognizer;
 import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;
 import fi.aalto.cse.harry.structure.RectanleDimensions;
 
-public class FaceDetectionExecutor {
+public class CircleRecognitionExecutor {
 
-	private static FaceDetectionExecutor INSTANCE;
+	private static CircleRecognitionExecutor INSTANCE;
 
 	private static final int NO_THREADS = 1;
 
-	private FaceDetectionExecutor() {
+	private CircleRecognitionExecutor() {
 		ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
 		for (int i = 0; i < NO_THREADS; i++) {
-			executor.execute(new FaceDetectionRunnable());
+			executor.execute(new CircleRecognitionRunnable());
 		}
 	}
 
 	public static void initialize() {
-		synchronized (FaceDetectionExecutor.class) {
+		synchronized (CircleRecognitionExecutor.class) {
 			if (INSTANCE == null) {
-				synchronized (FaceDetectionExecutor.class) {
-					INSTANCE = new FaceDetectionExecutor();
+				synchronized (CircleRecognitionExecutor.class) {
+					INSTANCE = new CircleRecognitionExecutor();
 				}
 			}
 		}
@@ -43,11 +44,11 @@ public class FaceDetectionExecutor {
 	 * 
 	 * 
 	 */
-	private class FaceDetectionRunnable implements Runnable {
-		private FaceDetection faceDetection;
+	private class CircleRecognitionRunnable implements Runnable {
+		private CircleRecognizer circleRecognizer;
 
-		public FaceDetectionRunnable() {
-			faceDetection = new FaceDetection();
+		public CircleRecognitionRunnable() {
+			circleRecognizer = new CircleRecognizer();
 		}
 
 		@Override
@@ -59,8 +60,8 @@ public class FaceDetectionExecutor {
 					BufferedImage buf = getImageFromQueue();
 					if (buf != null) {
 						// System.out.println("Face detection in progress.");
-						List<RectanleDimensions> rectDimensionsList = faceDetection
-								.detectAndDisplay(buf);
+						List<RectanleDimensions> rectDimensionsList = circleRecognizer
+								.recognize(buf);
 						// Add dimension to queue.
 						RectangleDimensionsQueue.getInstance()
 								.addRectangleDimensions(rectDimensionsList);
