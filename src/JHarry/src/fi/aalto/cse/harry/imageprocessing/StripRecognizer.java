@@ -13,10 +13,9 @@ import org.opencv.imgproc.Imgproc;
 
 import fi.aalto.cse.harry.structure.RectanleDimensions;
 
-public class CircleRecognizer {
+public class StripRecognizer {
 	
-	private static int maxWidth = 0;
-	private static int maxHeight = 0;
+	private static int avgWidth = 0;
 
 	public List<RectanleDimensions> recognize(BufferedImage imageFromClient) {
 		// Load the native library.
@@ -35,8 +34,7 @@ public class CircleRecognizer {
 		Mat distance = new Mat(webcam_image.height(), webcam_image.width(),
 				CvType.CV_8UC1);
 
-		List<Mat> lhsv = new ArrayList<Mat>(3);
-		Mat circles = new Mat();
+		List<Mat> lhsv = new ArrayList<Mat>(3);		
 		Mat strips = new Mat();
 
 		Scalar hsv_min = new Scalar(0, 50, 50, 0);
@@ -149,14 +147,9 @@ public class CircleRecognizer {
 	private int getWidth(double x1, double x2) {
 		int tmp = (int) (x2 - x1);
 		tmp = (tmp < 0) ? (tmp * -1) : tmp;
-		maxWidth = Math.max(tmp, maxWidth);
-		return maxWidth;
-	}
-
-	private int getHeight(double y1, double y2) {
-		int tmp = (int) (y2 - y1);
-		tmp = (tmp < 0) ? (tmp * -1) : tmp;
-		maxHeight = Math.max(tmp, maxHeight);
-		return maxHeight;
-	}
+		if (avgWidth == 0) {
+			avgWidth = tmp;
+		}
+		return (avgWidth + tmp) / 2;
+	}	
 }

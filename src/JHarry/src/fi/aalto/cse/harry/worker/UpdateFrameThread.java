@@ -16,7 +16,7 @@ public class UpdateFrameThread implements Runnable {
 	public UpdateFrameThread(ImagePanel panel) {		
 		imageQueue = ImageQueue.getInstance();		
 		// Just to initialize ImageExporterExecutor and DisplayImageInPanelExecutor
-		CircleRecognitionExecutor.initialize();
+		StripRecognitionExecutor.initialize();
 		DisplayImageInPanelExecutor.initialize(panel);
 	}
 

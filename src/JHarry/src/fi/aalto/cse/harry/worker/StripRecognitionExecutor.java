@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import fi.aalto.cse.harry.imageprocessing.CircleRecognizer;
+import fi.aalto.cse.harry.imageprocessing.StripRecognizer;
 import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;
 import fi.aalto.cse.harry.structure.RectanleDimensions;
 
-public class CircleRecognitionExecutor {
+public class StripRecognitionExecutor {
 
-	private static CircleRecognitionExecutor INSTANCE;
+	private static StripRecognitionExecutor INSTANCE;
 
 	private static final int NO_THREADS = 1;
 
-	private CircleRecognitionExecutor() {
+	private StripRecognitionExecutor() {
 		ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
 		for (int i = 0; i < NO_THREADS; i++) {
 			executor.execute(new CircleRecognitionRunnable());
@@ -25,10 +25,10 @@ public class CircleRecognitionExecutor {
 	}
 
 	public static void initialize() {
-		synchronized (CircleRecognitionExecutor.class) {
+		synchronized (StripRecognitionExecutor.class) {
 			if (INSTANCE == null) {
-				synchronized (CircleRecognitionExecutor.class) {
-					INSTANCE = new CircleRecognitionExecutor();
+				synchronized (StripRecognitionExecutor.class) {
+					INSTANCE = new StripRecognitionExecutor();
 				}
 			}
 		}
@@ -45,10 +45,10 @@ public class CircleRecognitionExecutor {
 	 * 
 	 */
 	private class CircleRecognitionRunnable implements Runnable {
-		private CircleRecognizer circleRecognizer;
+		private StripRecognizer stripRecognizer;
 
 		public CircleRecognitionRunnable() {
-			circleRecognizer = new CircleRecognizer();
+			stripRecognizer = new StripRecognizer();
 		}
 
 		@Override
@@ -60,7 +60,7 @@ public class CircleRecognitionExecutor {
 					BufferedImage buf = getImageFromQueue();
 					if (buf != null) {
 						// System.out.println("Face detection in progress.");
-						List<RectanleDimensions> rectDimensionsList = circleRecognizer
+						List<RectanleDimensions> rectDimensionsList = stripRecognizer
 								.recognize(buf);
 						// Add dimension to queue.
 						RectangleDimensionsQueue.getInstance()
