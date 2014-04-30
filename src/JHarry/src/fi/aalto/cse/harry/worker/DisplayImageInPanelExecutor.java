@@ -72,7 +72,7 @@ public class DisplayImageInPanelExecutor {
 			if (rectDimensionsList != null && rectDimensionsList.size() > 0) {
 				drawRectangles(image, rectDimensionsList);
 			}
-			framePanel.UpdateImage(image);
+			framePanel.setimage(image);
 		}
 
 		private void drawRectangles(BufferedImage image,
