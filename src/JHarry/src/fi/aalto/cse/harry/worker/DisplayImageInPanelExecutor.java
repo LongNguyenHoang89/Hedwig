@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;
-import fi.aalto.cse.harry.structure.RectanleDimensions;
+import fi.aalto.cse.harry.structure.RectangleDimensions;
 import fi.aalto.cse.harry.ui.ImagePanel;
 
 public class DisplayImageInPanelExecutor {
@@ -67,7 +67,7 @@ public class DisplayImageInPanelExecutor {
 			if (image == null) {
 				return;
 			}
-			List<RectanleDimensions> rectDimensionsList = RectangleDimensionsQueue
+			List<RectangleDimensions> rectDimensionsList = RectangleDimensionsQueue
 					.getInstance().getRectangleDimensions();
 			if (rectDimensionsList != null && rectDimensionsList.size() > 0) {
 				drawRectangles(image, rectDimensionsList);
@@ -76,13 +76,13 @@ public class DisplayImageInPanelExecutor {
 		}
 
 		private void drawRectangles(BufferedImage image,
-				List<RectanleDimensions> rectDimensionsList) {
+				List<RectangleDimensions> rectDimensionsList) {
 			Graphics2D graph = image.createGraphics();
 			graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			graph.setColor(Color.BLUE);
 			graph.setStroke(new BasicStroke(1));
-			for (RectanleDimensions rectDimensions : rectDimensionsList) {
+			for (RectangleDimensions rectDimensions : rectDimensionsList) {
 				graph.draw(new Rectangle(rectDimensions.getX(), rectDimensions
 						.getY(), rectDimensions.getWidth(), rectDimensions
 						.getHeight()));

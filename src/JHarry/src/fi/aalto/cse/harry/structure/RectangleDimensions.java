@@ -1,13 +1,13 @@
 package fi.aalto.cse.harry.structure;
 
-public class RectanleDimensions {
+public class RectangleDimensions {
 
 	private int x;
 	private int y;
 	private int width;
 	private int height;
 
-	public RectanleDimensions(int x, int y, int width, int height) {
+	public RectangleDimensions(int x, int y, int width, int height) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -34,7 +34,7 @@ public class RectanleDimensions {
 
 	@Override
 	public String toString() {
-		return "RectanleDimensions [x=" + x + ", y=" + y + ", width=" + width
+		return "RectangleDimensions [x=" + x + ", y=" + y + ", width=" + width
 				+ ", height=" + height + "]";
 	}
 }

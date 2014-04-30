@@ -11,12 +11,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class RectangleDimensionsQueue {
 
-	private LinkedBlockingQueue<List<RectanleDimensions>> sRectangleQueue = null;
+	private LinkedBlockingQueue<List<RectangleDimensions>> sRectangleQueue = null;
 
 	private static final RectangleDimensionsQueue INSTANCE = new RectangleDimensionsQueue();
 
 	private RectangleDimensionsQueue() {
-		sRectangleQueue = new LinkedBlockingQueue<List<RectanleDimensions>>();
+		sRectangleQueue = new LinkedBlockingQueue<List<RectangleDimensions>>();
 	}
 
 	public static RectangleDimensionsQueue getInstance() {
@@ -24,11 +24,11 @@ public class RectangleDimensionsQueue {
 	}
 
 	public boolean addRectangleDimensions(
-			List<RectanleDimensions> rectDimensions) {
+			List<RectangleDimensions> rectDimensions) {
 		return sRectangleQueue.add(rectDimensions);
 	}
 
-	public List<RectanleDimensions> getRectangleDimensions() {
+	public List<RectangleDimensions> getRectangleDimensions() {
 		if (isEmpty()) {
 			return null;
 		}

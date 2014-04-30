@@ -11,13 +11,14 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-import fi.aalto.cse.harry.structure.RectanleDimensions;
+import fi.aalto.cse.harry.structure.RectangleDimensions;
 
 public class StripRecognizer {
 	
 	private static int avgWidth = 0;
 
-	public List<RectanleDimensions> recognize(BufferedImage imageFromClient) {
+	public List<RectangleDimensions> recognize(BufferedImage imageFromClient) {
+		long startTime = System.currentTimeMillis();
 		// Load the native library.
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
@@ -37,12 +38,17 @@ public class StripRecognizer {
 		List<Mat> lhsv = new ArrayList<Mat>(3);		
 		Mat strips = new Mat();
 
-		Scalar hsv_min = new Scalar(0, 50, 50, 0);
+		/*Scalar hsv_min = new Scalar(0, 50, 50, 0);
 		Scalar hsv_max = new Scalar(6, 255, 255, 0);
 		Scalar hsv_min2 = new Scalar(175, 50, 50, 0);
-		Scalar hsv_max2 = new Scalar(179, 255, 255, 0);
+		Scalar hsv_max2 = new Scalar(179, 255, 255, 0);*/
+		
+		Scalar hsv_min = new Scalar(25, 50, 50, 0);
+		Scalar hsv_max = new Scalar(31, 255, 255, 0);
+		Scalar hsv_min2 = new Scalar(200, 50, 50, 0);
+		Scalar hsv_max2 = new Scalar(204, 255, 255, 0);
 
-		List<RectanleDimensions> rectDimensions = new ArrayList<RectanleDimensions>();
+		List<RectangleDimensions> rectDimensions = new ArrayList<RectangleDimensions>();
 
 		if (!webcam_image.empty()) {
 
@@ -88,7 +94,7 @@ public class StripRecognizer {
 					int y = ((int) data2[i + 1] - radius);
 					int widthAndHeight = radius * 2;
 
-					rectDimensions.add(new RectanleDimensions(x, y,
+					rectDimensions.add(new RectangleDimensions(x, y,
 							widthAndHeight, widthAndHeight));
 				}
 			}*/
@@ -124,7 +130,11 @@ public class StripRecognizer {
 						System.out.println("startX: " + startX + ", startY: "
 								+ startY + ", Width: " + width + ", Height: "
 								+ height);
-						rectDimensions.add(new RectanleDimensions(startX,
+						long endTime = System.currentTimeMillis();
+						System.out
+								.println("Time taken for strip recognition in milliseconds : "
+										+ (endTime - startTime));
+						rectDimensions.add(new RectangleDimensions(startX,
 								startY, width, height));
 					}
 				}

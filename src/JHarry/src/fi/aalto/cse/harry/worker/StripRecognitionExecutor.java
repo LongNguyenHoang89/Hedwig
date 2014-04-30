@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import fi.aalto.cse.harry.imageprocessing.StripRecognizer;
 import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;
-import fi.aalto.cse.harry.structure.RectanleDimensions;
+import fi.aalto.cse.harry.structure.RectangleDimensions;
 
 public class StripRecognitionExecutor {
 
@@ -60,7 +60,7 @@ public class StripRecognitionExecutor {
 					BufferedImage buf = getImageFromQueue();
 					if (buf != null) {
 						// System.out.println("Face detection in progress.");
-						List<RectanleDimensions> rectDimensionsList = stripRecognizer
+						List<RectangleDimensions> rectDimensionsList = stripRecognizer
 								.recognize(buf);
 						// Add dimension to queue.
 						RectangleDimensionsQueue.getInstance()
