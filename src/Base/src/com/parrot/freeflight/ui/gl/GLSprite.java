@@ -22,10 +22,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.opengl.GLES20;
+import android.opengl.GLES30;
+import android.opengl.GLES30;
+import android.opengl.GLES30;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.os.Build;
 import android.util.Log;
 
 import com.parrot.freeflight.utils.TextureUtils;
@@ -70,6 +71,9 @@ public class GLSprite {
 
     protected int[] textures = { -1 };
     protected int[] buffers = { -1, -1 };
+    protected int[] fbuffers = { -1 };
+    protected int[] dbuffers = { -1 };
+
     private float[] mMVPMatrix = new float[16];
     private float[] mMMatrix = new float[16];
     private float[] mVMatrix = new float[16];
@@ -89,8 +93,6 @@ public class GLSprite {
     private float prevX;
     private float prevY;
 
-    private boolean useWorkaroundsForSDK8 = false;
-
     /*
      * public ByteBuffer mPixelBuf;
      * 
@@ -102,7 +104,6 @@ public class GLSprite {
     }
 
     public GLSprite(Resources res, Bitmap bmp) {
-	useWorkaroundsForSDK8 = Build.VERSION.SDK_INT < 9;
 	updateVertexBuffer = false;
 	recalculateMatrix = true;
 	alpha = 1.0f;
@@ -130,22 +131,17 @@ public class GLSprite {
 	textureHeight = texture.getHeight();
 
 	currPaint = new Paint();
-
-	/*
-	 * mPixelBuf = ByteBuffer.allocateDirect(imageWidth * imageHeight * 4);
-	 * mPixelBuf.order(ByteOrder.nativeOrder());
-	 */
     }
 
     public void init(GL10 gl, int program) {
 	this.program = program;
 
-	GLES20.glUseProgram(program);
+	GLES30.glUseProgram(program);
 	checkGlError("glUseProgram program");
-	positionHandle = GLES20.glGetAttribLocation(program, "vPosition");
-	textureHandle = GLES20.glGetAttribLocation(program, "aTextureCoord");
-	mvpMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
-	fAlphaHandle = GLES20.glGetUniformLocation(program, "fAlpha");
+	positionHandle = GLES30.glGetAttribLocation(program, "vPosition");
+	textureHandle = GLES30.glGetAttribLocation(program, "aTextureCoord");
+	mvpMatrixHandle = GLES30.glGetUniformLocation(program, "uMVPMatrix");
+	fAlphaHandle = GLES30.glGetUniformLocation(program, "fAlpha");
 	checkGlError("glGetAttribLocation");
 
 	recalculateTexturePosition();
@@ -155,67 +151,56 @@ public class GLSprite {
     public void recalculateTexturePosition() {
 	HedwigLog.logFunction(this, "recalculateTexturePosition");
 	if (textures[0] != -1) {
-	    GLES20.glDeleteTextures(1, textures, 0);
+	    GLES30.glDeleteTextures(1, textures, 0);
 	}
 
 	if (buffers[0] != -1) {
-	    GLES20.glDeleteBuffers(buffers.length, buffers, 0);
+	    GLES30.glDeleteBuffers(buffers.length, buffers, 0);
 	}
 
-	GLES20.glGenTextures(1, textures, 0);
-	GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
+	GLES30.glGenTextures(1, textures, 0);
+	GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textures[0]);
 	checkGlError("glBindTexture");
 
-	GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-		GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-	GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-		GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-	GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
-		GLES20.GL_CLAMP_TO_EDGE);
-	GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
-		GLES20.GL_CLAMP_TO_EDGE);
+	GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D,
+		GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR);
+	GLES30.glTexParameterf(GLES30.GL_TEXTURE_2D,
+		GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
+	GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S,
+		GLES30.GL_CLAMP_TO_EDGE);
+	GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T,
+		GLES30.GL_CLAMP_TO_EDGE);
 
-	GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
+	GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, texture, 0);
 	checkGlError("texImage2D");
 
-	GLES20.glGenBuffers(buffers.length, buffers, 0);
+	GLES30.glGenBuffers(buffers.length, buffers, 0);
 
 	// Vertices
 	vertices = createVertex(width, height);
 
-	GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
+	GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
 	checkGlError("glBindBuffer buffers[" + VERTEX_BUFFER + "]");
-	GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, 20 * FLOAT_SIZE_BYTES,
-		vertices, GLES20.GL_STATIC_DRAW);
+	GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, 20 * FLOAT_SIZE_BYTES,
+		vertices, GLES30.GL_STATIC_DRAW);
 	checkGlError("glBufferData vertices");
 
-	if (useWorkaroundsForSDK8) {
-	    fix.android.opengl.GLES20.glVertexAttribPointer(positionHandle, 3,
-		    GLES20.GL_FLOAT, false, 5 * FLOAT_SIZE_BYTES, 0);
-	} else {
-	    GLES20.glVertexAttribPointer(positionHandle, 3, GLES20.GL_FLOAT,
-		    false, 5 * FLOAT_SIZE_BYTES, 0);
-	}
+	GLES30.glVertexAttribPointer(positionHandle, 3, GLES30.GL_FLOAT, false,
+		5 * FLOAT_SIZE_BYTES, 0);
 
-	GLES20.glEnableVertexAttribArray(positionHandle);
+	GLES30.glEnableVertexAttribArray(positionHandle);
 
-	if (useWorkaroundsForSDK8) {
-	    fix.android.opengl.GLES20.glVertexAttribPointer(textureHandle, 2,
-		    GLES20.GL_FLOAT, false, 5 * FLOAT_SIZE_BYTES,
-		    3 * FLOAT_SIZE_BYTES);
-	} else {
-	    GLES20.glVertexAttribPointer(textureHandle, 2, GLES20.GL_FLOAT,
-		    false, 5 * FLOAT_SIZE_BYTES, 3 * FLOAT_SIZE_BYTES);
-	}
+	GLES30.glVertexAttribPointer(textureHandle, 2, GLES30.GL_FLOAT, false,
+		5 * FLOAT_SIZE_BYTES, 3 * FLOAT_SIZE_BYTES);
 
-	GLES20.glEnableVertexAttribArray(textureHandle);
+	GLES30.glEnableVertexAttribArray(textureHandle);
 
 	// Indexes
 	indexes = createIndex();
-	GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,
+	GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER,
 		buffers[INDEX_BUFFER]);
-	GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, 4 * 2, indexes,
-		GLES20.GL_STATIC_DRAW);
+	GLES30.glBufferData(GLES30.GL_ELEMENT_ARRAY_BUFFER, 4 * 2, indexes,
+		GLES30.GL_STATIC_DRAW);
     }
 
     private FloatBuffer createVertex(float width, float height) {
@@ -260,8 +245,9 @@ public class GLSprite {
     }
 
     protected void onUpdateTexture() {
+	//HedwigLog.logFunction(this, "onUpdateTexture");
 	if (updateTexture) {
-	    GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, texture, 0);
+	    GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, texture, 0);
 	    updateTexture = false;
 
 	    vertices = createVertex(width, height);
@@ -286,8 +272,7 @@ public class GLSprite {
     public void onDraw(GL10 gl, float x, float y) {
 	if (!readyToDraw)
 	    return;
-
-	HedwigLog.logFunction(this, "onDraw");
+	// HedwigLog.logFunction(this, "onDraw");
 
 	if (prevX != x || prevY != y) {
 	    recalculateMatrix = true;
@@ -295,34 +280,27 @@ public class GLSprite {
 	    prevY = y;
 	}
 
-	GLES20.glUseProgram(program);
-	GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-	GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
+	GLES30.glUseProgram(program);
+	GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
+	GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textures[0]);
 
 	onUpdateTexture();
 
-	GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
+	GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
 
 	if (updateVertexBuffer) {
-	    GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, 0,
+	    GLES30.glBufferSubData(GLES30.GL_ARRAY_BUFFER, 0,
 		    20 * FLOAT_SIZE_BYTES, vertices);
 	    updateVertexBuffer = false;
 	}
 
 	int stride = 5 * FLOAT_SIZE_BYTES;
-	if (useWorkaroundsForSDK8) {
-	    fix.android.opengl.GLES20.glVertexAttribPointer(positionHandle,
-		    VERTEX_COORDS_SIZE, GLES20.GL_FLOAT, false, stride, 0);
-	    fix.android.opengl.GLES20.glVertexAttribPointer(textureHandle,
-		    TEXTURE_COORDS_SIZE, GLES20.GL_FLOAT, false, stride,
-		    VERTEX_COORDS_SIZE * FLOAT_SIZE_BYTES);
-	} else {
-	    GLES20.glVertexAttribPointer(positionHandle, VERTEX_COORDS_SIZE,
-		    GLES20.GL_FLOAT, false, stride, 0);
-	    GLES20.glVertexAttribPointer(textureHandle, TEXTURE_COORDS_SIZE,
-		    GLES20.GL_FLOAT, false, stride, VERTEX_COORDS_SIZE
-			    * FLOAT_SIZE_BYTES);
-	}
+
+	GLES30.glVertexAttribPointer(positionHandle, VERTEX_COORDS_SIZE,
+		GLES30.GL_FLOAT, false, stride, 0);
+	GLES30.glVertexAttribPointer(textureHandle, TEXTURE_COORDS_SIZE,
+		GLES30.GL_FLOAT, false, stride, VERTEX_COORDS_SIZE
+			* FLOAT_SIZE_BYTES);
 
 	if (recalculateMatrix) {
 	    Matrix.setIdentityM(mMMatrix, 0);
@@ -333,41 +311,37 @@ public class GLSprite {
 	    recalculateMatrix = false;
 	}
 
-	GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mMVPMatrix, 0);
+	GLES30.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mMVPMatrix, 0);
 
 	if (alpha < 1.0f) {
-	    GLES20.glUniform1f(fAlphaHandle, alpha);
+	    GLES30.glUniform1f(fAlphaHandle, alpha);
 	} else {
-	    GLES20.glUniform1f(fAlphaHandle, 1.0f);
+	    GLES30.glUniform1f(fAlphaHandle, 1.0f);
 	}
 
-	GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER,
-		buffers[INDEX_BUFFER]);
+	// GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER,
+	// buffers[INDEX_BUFFER]);
 
-	if (useWorkaroundsForSDK8) {
-	    GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, _COUNT);
-	} else {
-	    GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, _COUNT,
-		    GLES20.GL_UNSIGNED_SHORT, 0);
-	}
+	GLES30.glDrawElements(GLES30.GL_TRIANGLE_STRIP, _COUNT,
+		GLES30.GL_UNSIGNED_SHORT, 0);
 
 	checkGlError("glDrawElements");
 
-	/* mPixelBuf.rewind(); */
-	// GLES20.glReadPixels(0, 0, imageWidth, imageHeight, GLES20.GL_RGB565,
-	// GLES20.GL_UNSIGNED_INT, (Buffer) mPixelBuf);
-
-	//Push that frame to server
-	exportBitmap();
+	// Push that frame to server
+	// exportBitmap();
+	// GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
     }
 
     // http://stackoverflow.com/questions/3310990/taking-screenshot-of-android-opengl
     private void exportBitmap() {
+
 	int screenshotSize = this.width * this.height;
 	ByteBuffer bb = ByteBuffer.allocateDirect(screenshotSize * 4);
 	bb.order(ByteOrder.nativeOrder());
-	GLES20.glReadPixels(0, 0, width, height, GL10.GL_RGBA,
+	GLES30.glReadBuffer(GLES30.GL_COLOR_ATTACHMENT0);
+	GLES30.glReadPixels(0, 0, width, height, GL10.GL_RGBA,
 		GL10.GL_UNSIGNED_BYTE, bb);
+
 	int pixelsBuffer[] = new int[screenshotSize];
 	bb.asIntBuffer().get(pixelsBuffer);
 	bb = null;
@@ -430,7 +404,7 @@ public class GLSprite {
 
     private void checkGlError(String op) {
 	int error;
-	while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+	while ((error = GLES30.glGetError()) != GLES30.GL_NO_ERROR) {
 	    try {
 		throw new RuntimeException(op + ": glError " + error);
 	    } catch (RuntimeException e) {

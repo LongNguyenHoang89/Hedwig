@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import com.parrot.freeflight.R;
+import com.parrot.freeflight.drone.DroneConfig;
 import com.parrot.freeflight.receivers.DroneReadyReceiver;
 import com.parrot.freeflight.receivers.DroneReadyReceiverDelegate;
 import com.parrot.freeflight.service.DroneControlService;
@@ -96,6 +97,7 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 	droneControlService = ((DroneControlService.LocalBinder) service)
 		.getService();
 	droneControlService.resume();
+	DroneConfig config = droneControlService.getDroneConfig();
 	controller = new DroneController(droneControlService);
     }
 
@@ -110,41 +112,34 @@ public class RelayClientActivity extends Activity implements ServiceConnection,
 	HedwigLog.logFunction(this, "onDroneReady");
 	// Fork a new thread for client
 	new Thread(new ClientThread()).start();
-	
+
 	// Drone is ready, we start new activity to render stream from camera
-	Intent droneControlActivity = new Intent(this,
-		VideoStreamActivity.class);
-	startActivity(droneControlActivity);
+	Intent videoStreamActivity = new Intent(this, VideoStreamActivity.class);
+	startActivity(videoStreamActivity);
     }
 
     class ClientThread implements Runnable {
 	@Override
 	public void run() {
 	    HedwigLog.logFunction(this, "Run");
-	    try {		
-		InetAddress serverAddr = InetAddress.getByName(Constant.SERVER_IP);
+	    try {
+		InetAddress serverAddr = InetAddress
+			.getByName(Constant.SERVER_IP);
 
 		clientSocket = new Socket(serverAddr, Constant.SERVERPORT);
 		HedwigLog.log(clientSocket.getRemoteSocketAddress().toString());
 		socketOut = new PrintWriter(clientSocket.getOutputStream(),
 			true);
-		
+
 		socketIn = new DataInputStream(clientSocket.getInputStream());
-		
+
 		int command = -1;
 		float commandValue;
-		while ( ( command = socketIn.readInt()) > -1) {
-			commandValue = socketIn.readFloat();
-			socketIn.readInt();
-			controller.processCommand(command, commandValue);
+		while ((command = socketIn.readInt()) > -1) {
+		    commandValue = socketIn.readFloat();
+		    socketIn.readInt();
+		    controller.processCommand(command, commandValue);
 		}
-		
-		/*
-		while ((command = socketIn.readLine()) != null) {
-		    System.out.println("Server: " + socketIn);
-		    controller.processCommand(command);
-		}
-		*/
 
 	    } catch (UnknownHostException e1) {
 		HedwigLog.log(e1.getMessage());

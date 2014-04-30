@@ -3,11 +3,13 @@ package com.parrot.freeflight.ui.gl;
 import javax.microedition.khronos.opengles.GL10;
 
 import fi.aalto.cse.hedwig.HedwigLog;
+import fi.aalto.cse.hedwig.sync.ImageQueue;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.opengl.GLES20;
+import android.util.Log;
 
 public class GLBGVideoSprite extends GLSprite {
     private static final String TAG = GLBGVideoSprite.class.getSimpleName();
@@ -29,16 +31,16 @@ public class GLBGVideoSprite extends GLSprite {
 
     private int x;
     private int y;
-    
+
     public GLBGVideoSprite(Resources resources) {
 	super(resources, null);
 	videoFrameLock = new Object();
 	video = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
     }
- 
+
     @Override
     protected void onUpdateTexture() {
-	//HedwigLog.logFunction(this, "onUpdateTexture");
+	// HedwigLog.logFunction(this, "onUpdateTexture");
 	if (onUpdateVideoTextureNative(program, textures[0])
 		&& (prevImgWidth != imageWidth || prevImgHeight != imageHeight)) {
 	    if (!isVideoReady) {
@@ -81,7 +83,8 @@ public class GLBGVideoSprite extends GLSprite {
 	    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 	    super.onDraw(canvas, x, y);
 	} else {
-	    canvas.drawBitmap(video, matrix, null);
+	    ImageQueue.getInstance().addImage(video);
+	    canvas.drawBitmap(video, matrix, null);	    
 	}
     }
 

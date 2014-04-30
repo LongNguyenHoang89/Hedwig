@@ -92,7 +92,6 @@ public class HudViewController implements OnTouchListener, OnGestureListener {
     private Text txtRecord;
     private Text txtUsbRemaining;
 
-    private GLSurfaceView glView;
     private VideoStageView canvasView;
 
     private JoystickBase[] joysticks;
@@ -117,11 +116,6 @@ public class HudViewController implements OnTouchListener, OnGestureListener {
 	canvasView = null;
 	joysticks = new JoystickBase[2];
 
-	glView = new GLSurfaceView(context);
-	glView.setEGLContextClientVersion(2);
-
-	context.setContentView(glView);
-
 	renderer = new VideoStageRenderer(context, null);
 
 	if (useSoftwareRendering) {
@@ -129,17 +123,16 @@ public class HudViewController implements OnTouchListener, OnGestureListener {
 	    // RelativeLayout root = (RelativeLayout)
 	    // context.findViewById(R.id.controllerRootLayout);
 	    // root.removeView(glView);
-	    glView = null;
 
 	    canvasView = new VideoStageView(context);
 	    canvasView.setLayoutParams(new LayoutParams(
 		    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+	    context.setContentView(canvasView);
 	    // root.addView(canvasView, 0);
 	}
 
 	initNavdataStrings();
 	initCanvasSurfaceView();
-	initGLSurfaceView();
 
 	Resources res = context.getResources();
 
@@ -336,12 +329,6 @@ public class HudViewController implements OnTouchListener, OnGestureListener {
 	}
     }
 
-    private void initGLSurfaceView() {
-	if (glView != null) {
-	    glView.setRenderer(renderer);
-	    glView.setOnTouchListener(this);
-	}
-    }
 
     public void setJoysticks(JoystickBase left, JoystickBase right) {
 	joysticks[0] = left;
@@ -597,19 +584,13 @@ public class HudViewController implements OnTouchListener, OnGestureListener {
     }
 
     public void onPause() {
-	if (glView != null) {
-	    glView.onPause();
-	}
-
 	if (canvasView != null) {
 	    canvasView.onStop();
 	}
     }
 
     public void onResume() {
-	if (glView != null) {
-	    glView.onResume();
-	}
+	
 
 	if (canvasView != null) {
 	    canvasView.onStart();
@@ -691,9 +672,7 @@ public class HudViewController implements OnTouchListener, OnGestureListener {
     }
 
     public View getRootView() {
-	if (glView != null) {
-	    return glView;
-	} else if (canvasView != null) {
+	if (canvasView != null) {
 	    return canvasView;
 	}
 
