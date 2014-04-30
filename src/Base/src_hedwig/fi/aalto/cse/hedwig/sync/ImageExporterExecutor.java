@@ -22,7 +22,7 @@ public class ImageExporterExecutor {
 
     private static final int NO_THREADS = 1;
 
-    private static final int IMG_QUALITY = 50;
+    private static final int IMG_QUALITY = 10;
 
     private ImageExporterExecutor() {
 	ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
@@ -117,7 +117,7 @@ public class ImageExporterExecutor {
 
     private void sleepTime() {
 	try {
-	    Thread.sleep(50);
+	    Thread.sleep(Constant.FRAME_INTERVAL_IN_MILISECOND);
 	} catch (InterruptedException e) {
 	    Log.e(LOG_TAG, "Thread has been interrupted.");
 	}

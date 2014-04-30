@@ -336,6 +336,10 @@ public class DroneConfig
 		
 		return droneVersion;
 	}
+	
+	public void switchCamera(){
+	    changeToVerticalCamera();
+	}
 
 
 	private native void updateOutdoorHullNative();
@@ -356,5 +360,6 @@ public class DroneConfig
 	private static native int getFtpPortNative();
 	private static native String getDroneHostNative();
 
-
+	//Hedwig
+	private native void changeToVerticalCamera();
 }

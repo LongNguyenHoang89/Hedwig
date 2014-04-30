@@ -158,7 +158,7 @@ public class ConnectActivity
     {
 	HedwigLog.logFunction(this, "onOpenHudScreen");
         Intent droneControlActivity = new Intent(ConnectActivity.this, ControlDroneActivity.class);
-        droneControlActivity.putExtra("USE_SOFTWARE_RENDERING", false);
+        droneControlActivity.putExtra("USE_SOFTWARE_RENDERING", true);
         droneControlActivity.putExtra("FORCE_COMBINED_CONTROL_MODE", false);
         startActivity(droneControlActivity);
     }
