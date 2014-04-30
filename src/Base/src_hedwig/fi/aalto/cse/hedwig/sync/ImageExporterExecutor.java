@@ -22,7 +22,7 @@ public class ImageExporterExecutor {
 
     private static final int NO_THREADS = 1;
 
-    private static final int IMG_QUALITY = 10;
+    private static final int IMG_QUALITY = 50;
 
     private ImageExporterExecutor() {
 	ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);

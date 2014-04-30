@@ -16,6 +16,8 @@ public class StripRecognitionExecutor {
 	private static StripRecognitionExecutor INSTANCE;
 
 	private static final int NO_THREADS = 1;
+	
+	private DroneMovementCommmandGenerator droneMovCmdGen = null;
 
 	private StripRecognitionExecutor() {
 		ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
@@ -59,12 +61,19 @@ public class StripRecognitionExecutor {
 				} else {
 					BufferedImage buf = getImageFromQueue();
 					if (buf != null) {
+						if(droneMovCmdGen == null) {
+							droneMovCmdGen = DroneMovementCommmandGenerator.getInstance(buf.getWidth(), buf.getHeight());
+						}
 						// System.out.println("Face detection in progress.");
 						List<RectangleDimensions> rectDimensionsList = stripRecognizer
 								.recognize(buf);
 						// Add dimension to queue.
-						RectangleDimensionsQueue.getInstance()
-								.addRectangleDimensions(rectDimensionsList);
+						if (rectDimensionsList.size() > 0) {
+							RectangleDimensions rectDimension = rectDimensionsList.get(0);
+							droneMovCmdGen.generateCommand(rectDimension);
+							RectangleDimensionsQueue.getInstance()
+									.addRectangleDimensions(rectDimensionsList);							
+						}
 					}
 				}
 			}

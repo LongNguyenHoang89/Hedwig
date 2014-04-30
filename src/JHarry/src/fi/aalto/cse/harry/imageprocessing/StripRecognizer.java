@@ -38,15 +38,15 @@ public class StripRecognizer {
 		List<Mat> lhsv = new ArrayList<Mat>(3);		
 		Mat strips = new Mat();
 
-		/*Scalar hsv_min = new Scalar(0, 50, 50, 0);
+		Scalar hsv_min = new Scalar(0, 50, 50, 0);
 		Scalar hsv_max = new Scalar(6, 255, 255, 0);
 		Scalar hsv_min2 = new Scalar(175, 50, 50, 0);
-		Scalar hsv_max2 = new Scalar(179, 255, 255, 0);*/
+		Scalar hsv_max2 = new Scalar(179, 255, 255, 0);
 		
-		Scalar hsv_min = new Scalar(25, 50, 50, 0);
+		/*Scalar hsv_min = new Scalar(25, 50, 50, 0);
 		Scalar hsv_max = new Scalar(31, 255, 255, 0);
 		Scalar hsv_min2 = new Scalar(200, 50, 50, 0);
-		Scalar hsv_max2 = new Scalar(204, 255, 255, 0);
+		Scalar hsv_max2 = new Scalar(204, 255, 255, 0);*/
 
 		List<RectangleDimensions> rectDimensions = new ArrayList<RectangleDimensions>();
 
