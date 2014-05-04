@@ -14,9 +14,7 @@ public class ImageQueue {
     private static final ImageQueue INSTANCE = new ImageQueue();
 
     private ImageQueue() {
-	sImageQueue = new LinkedBlockingQueue<Bitmap>();
-	// Initialize executor.
-	ImageExporterExecutor.initialize();
+	sImageQueue = new LinkedBlockingQueue<Bitmap>();	
     }
 
     public static ImageQueue getInstance() {
@@ -24,17 +22,17 @@ public class ImageQueue {
     }
 
     public boolean addImage(Bitmap bitmap) {
-	Log.d(LOG_TAG, "Added image to queue.");
+	//Log.d(LOG_TAG, "Added image to queue.");
 	return sImageQueue.add(bitmap);
     }
 
     public Bitmap getImage() {
-	Log.d(LOG_TAG, "Removed image from queue.");
+	//Log.d(LOG_TAG, "Removed image from queue.");
 	return sImageQueue.remove();
     }
 
     public boolean isEmpty() {
-	Log.d(LOG_TAG, "Image queue is empty.");
+	//Log.d(LOG_TAG, "Image queue is empty.");
 	return sImageQueue.isEmpty();
     }
 }

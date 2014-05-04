@@ -20,6 +20,7 @@ public class NavData
 	public boolean flying;
 	public int numFrames;
 	public boolean initialized;
+	public float psi;
 
 	
 	// This constants should match the enums defined in jni/common.h file
@@ -52,6 +53,7 @@ public class NavData
 		usbRemainingTime = -1;
 		cameraReady = false;
 		recordReady = false;
+		psi = 0;
 	}
 
 
@@ -67,6 +69,7 @@ public class NavData
 		this.usbRemainingTime = navData.usbRemainingTime;
 		this.cameraReady = navData.cameraReady;
 		this.recordReady = navData.recordReady;
+		this.psi = navData.psi;
 	}
 	
 	

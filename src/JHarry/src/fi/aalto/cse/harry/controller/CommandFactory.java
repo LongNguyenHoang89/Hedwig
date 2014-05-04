@@ -6,6 +6,7 @@ public class CommandFactory {
     private static final CommandFactory INSTANCE = new CommandFactory();
     private Packet currentCommand = null;
     public volatile boolean isReady = false;
+    public volatile boolean droneConnected = false;
 
     public static CommandFactory getInstance() {
 	return INSTANCE;
@@ -40,6 +41,10 @@ public class CommandFactory {
 	    return null;
     }
 
+    public Packet getCurrentCommand(){
+	return currentCommand;
+    }
+    
     private Packet getCommand(Command command) {
 	Packet commandPacket = null;
 	switch (command) {
@@ -50,13 +55,14 @@ public class CommandFactory {
 	    commandPacket = new Packet(command.getValue());
 	    break;	
 	case FORWARD:
-	    commandPacket = new Packet(command.getValue(), 0.1f);
+	    commandPacket = new Packet(command.getValue(), 0.05f);
 	    break;
 	case TURNRIGHT:
 	case TURNLEFT:
-	    commandPacket = new Packet(command.getValue(), 0.5f);
+	    commandPacket = new Packet(command.getValue(), 0.1f);
 	    break;
 	}
+	System.out.println("Create command " + command.name());
 	return commandPacket;
     }
 }

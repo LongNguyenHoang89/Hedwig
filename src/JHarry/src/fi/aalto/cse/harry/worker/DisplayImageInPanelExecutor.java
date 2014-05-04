@@ -6,10 +6,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.Console;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.opencv.core.Scalar;
+
+import fi.aalto.cse.harry.imageprocessing.CVUtils;
+import fi.aalto.cse.harry.imageprocessing.ColorBlobDetector;
 import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensions;
@@ -17,95 +22,104 @@ import fi.aalto.cse.harry.ui.ImagePanel;
 
 public class DisplayImageInPanelExecutor {
 
-	private static DisplayImageInPanelExecutor INSTANCE;
+    private static DisplayImageInPanelExecutor INSTANCE;
 
-	private static final int NO_THREADS = 1;
+    private static final int NO_THREADS = 1;
 
-	private DisplayImageInPanelExecutor(ImagePanel panel) {
-		ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
-		for (int i = 0; i < NO_THREADS; i++) {
-			executor.execute(new DisplayImageRunnable(panel));
-		}
+    private DisplayImageInPanelExecutor(ImagePanel panel) {
+	ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
+	for (int i = 0; i < NO_THREADS; i++) {
+	    executor.execute(new DisplayImageRunnable(panel));
 	}
+    }
 
-	public static void initialize(ImagePanel panel) {
+    public static void initialize(ImagePanel panel) {
+	synchronized (DisplayImageInPanelExecutor.class) {
+	    if (INSTANCE == null) {
 		synchronized (DisplayImageInPanelExecutor.class) {
-			if (INSTANCE == null) {
-				synchronized (DisplayImageInPanelExecutor.class) {
-					INSTANCE = new DisplayImageInPanelExecutor(panel);
-				}
-			}
+		    INSTANCE = new DisplayImageInPanelExecutor(panel);
 		}
+	    }
 	}
-	
-	/**
-	 * Access the ImageQueue and gets the image. Then checks if there is rectangle
-	 * dimensions list in RectangleDimensionsQueue. If there is draws image with
-	 * rectangles.
-	 * 
-	 */
-	private class DisplayImageRunnable implements Runnable {
-		private ImagePanel framePanel;
+    }
 
-		public DisplayImageRunnable(ImagePanel panel) {
-			framePanel = panel;
-		}
+    /**
+     * Access the ImageQueue and gets the image. Then checks if there is
+     * rectangle dimensions list in RectangleDimensionsQueue. If there is draws
+     * image with rectangles.
+     * 
+     */
+    private class DisplayImageRunnable implements Runnable {
+	private ImagePanel framePanel;
+	//private ColorBlobDetector detector;
 
-		@Override
-		public void run() {
-			while (true) {
-				if (isEmpty()) {
-					sleepTime();
-				} else {
-					BufferedImage buf = getImageFromQueue();
-					displayImageWithRectangles(buf);
-				}
-			}
-		}
-
-		private void displayImageWithRectangles(BufferedImage image) {
-			if (image == null) {
-				return;
-			}
-			List<RectangleDimensions> rectDimensionsList = RectangleDimensionsQueue
-					.getInstance().getRectangleDimensions();
-			if (rectDimensionsList != null && rectDimensionsList.size() > 0) {
-				drawRectangles(image, rectDimensionsList);
-			}
-			framePanel.setimage(image);
-		}
-
-		private void drawRectangles(BufferedImage image,
-				List<RectangleDimensions> rectDimensionsList) {
-			Graphics2D graph = image.createGraphics();
-			graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-			graph.setColor(Color.BLUE);
-			graph.setStroke(new BasicStroke(1));
-			for (RectangleDimensions rectDimensions : rectDimensionsList) {
-				graph.draw(new Rectangle(rectDimensions.getX(), rectDimensions
-						.getY(), rectDimensions.getWidth(), rectDimensions
-						.getHeight()));
-			}
-			graph.dispose();
-		}
-		
-		private void sleepTime() {
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+	public DisplayImageRunnable(ImagePanel panel) {
+	    framePanel = panel;
+	    //detector = new ColorBlobDetector();
 	}
 
-	private BufferedImage getImageFromQueue() {
-		ImageQueue imageQueue = ImageQueue.getInstance();
-		return imageQueue.getImage();
+	@Override
+	public void run() {
+	    while (true) {
+		if (isEmpty()) {
+		    sleepTime();
+		} else {
+		    BufferedImage buf = getImageFromQueue();		    
+		    // Yellow in a white paper
+		    // detector.setHsvRange(new Scalar(0, 94, 97), new
+		    // Scalar(34, 183, 124));
+
+		    //framePanel.setimage(detector.test(CVUtils.BufferedImageToMat(buf)));
+		    displayImageWithRectangles(buf);
+		}
+	    }
 	}
 
-	private boolean isEmpty() {
-		ImageQueue imageQueue = ImageQueue.getInstance();
-		return imageQueue.isEmpty();
-	}	
+	private void displayImageWithRectangles(BufferedImage image) {
+	    if (image == null) {
+		return;
+	    }
+	    List<RectangleDimensions> rectDimensionsList = RectangleDimensionsQueue
+		    .getInstance().getRectangleDimensions();
+	    if (rectDimensionsList != null && rectDimensionsList.size() > 0) {
+		//System.out.println("have rectangle");
+		drawRectangles(image, rectDimensionsList);
+	    }
+
+	    framePanel.setimage(image);
+	}
+
+	private void drawRectangles(BufferedImage image,
+		List<RectangleDimensions> rectDimensionsList) {
+	    Graphics2D graph = image.createGraphics();
+	    graph.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		    RenderingHints.VALUE_ANTIALIAS_ON);
+	    graph.setColor(Color.BLUE);
+	    graph.setStroke(new BasicStroke(2));
+	    for (RectangleDimensions rectDimensions : rectDimensionsList) {
+		graph.draw(new Rectangle(rectDimensions.getX(), rectDimensions
+			.getY(), rectDimensions.getWidth(), rectDimensions
+			.getHeight()));
+	    }
+	    graph.dispose();
+	}
+
+	private void sleepTime() {
+	    try {
+		Thread.sleep(50);
+	    } catch (InterruptedException e) {
+		e.printStackTrace();
+	    }
+	}
+    }
+
+    private BufferedImage getImageFromQueue() {
+	ImageQueue imageQueue = ImageQueue.getInstance();
+	return imageQueue.getImage();
+    }
+
+    private boolean isEmpty() {
+	ImageQueue imageQueue = ImageQueue.getInstance();
+	return imageQueue.isEmpty();
+    }
 }

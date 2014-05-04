@@ -16,6 +16,7 @@ public class DroneControlThread implements Runnable {
     public void run() {
 	droneControlServer = new ControlServer(Constants.CONTROL_SOCKET_PORT);
 	System.out.println("Drone connected");
+	factory.droneConnected = true;	
 	while(true){
 	    if (factory.isReady){		
 		droneControlServer.SendPacket(factory.executeCommand());

@@ -13,9 +13,19 @@ public class TestControlThread implements Runnable {
 
     @Override
     public void run() {
-	createCommand(Command.FLY, 10000);
-	createCommand(Command.TURNRIGHT, 10000);
-	createCommand(Command.DROP, 0);
+	while (true) {
+	    if (factory.droneConnected) {
+		createCommand(Command.FLY, 10000);
+		createCommand(Command.FORWARD, 3000);
+		createCommand(Command.STOP, 0);
+		createCommand(Command.TURNRIGHT, 15000);
+		createCommand(Command.STOP, 0);
+		createCommand(Command.FORWARD, 3000);
+		createCommand(Command.STOP, 0);
+		createCommand(Command.DROP, 0);
+		break;
+	    }
+	}
     }
 
     private void createCommand(Command c, int time) {

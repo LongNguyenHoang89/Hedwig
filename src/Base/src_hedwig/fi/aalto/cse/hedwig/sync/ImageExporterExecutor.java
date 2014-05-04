@@ -24,27 +24,29 @@ public class ImageExporterExecutor {
 
     private static final int IMG_QUALITY = 50;
 
-    private ImageExporterExecutor() {
-	ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
-	for (int i = 0; i < NO_THREADS; i++) {
-	    executor.execute(new ImageExporterRunnable());
-	}
+    private ImageExporterExecutor() {	
     }
 
-    public static void initialize() {
-	// Dummy method to load the class.
+    public static ImageExporterExecutor getInstance(){
+	return INSTANCE;
+    }
+       
+    public void initialize(String server, int port) {
+	ExecutorService executor = Executors.newFixedThreadPool(NO_THREADS);
+	for (int i = 0; i < NO_THREADS; i++) {
+	    executor.execute(new ImageExporterRunnable(server,port));
+	}
     }
 
     private class ImageExporterRunnable implements Runnable {
 	private DataOutputStream imageStreamToServer = null;
 
-	public ImageExporterRunnable() {
+	public ImageExporterRunnable(String server, int port) {
 	    try {
 		InetAddress serverAddr = InetAddress
-			.getByName(Constant.SERVER_IP);
-		Socket clientSocket = new Socket(serverAddr, Constant.VIDEOPORT);
-		imageStreamToServer = new DataOutputStream(
-			clientSocket.getOutputStream());
+			.getByName(server);
+		Socket clientSocket = new Socket(serverAddr, port);
+		imageStreamToServer = new DataOutputStream(clientSocket.getOutputStream());
 	    } catch (UnknownHostException e1) {
 		Log.e(LOG_TAG, "Unknown host exception while creating socket.");
 	    } catch (IOException e1) {

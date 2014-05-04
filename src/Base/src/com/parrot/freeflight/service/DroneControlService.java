@@ -47,6 +47,8 @@ import com.parrot.freeflight.utils.FTPUtils;
 import com.parrot.freeflight.utils.FileUtils;
 import com.parrot.freeflight.utils.GPSHelper;
 
+import fi.aalto.cse.hedwig.HedwigLog;
+
 public class DroneControlService extends Service implements Runnable,
 	DroneAcademyMediaListener, LocationListener {
     public static final String VIDEO_RECORDING_STATE_CHANGED_ACTION = "com.parrot.recording.changed";
@@ -827,6 +829,7 @@ public class DroneControlService extends Service implements Runnable,
 		droneProxy.updateNavdata();
 		NavData navData = droneProxy.getNavdata();
 
+		//HedwigLog.log("psi: " + navData.psi);
 		if (navData.emergencyState != prevNavData.emergencyState) {
 		    onEmergencyStateChanged(navData.emergencyState);
 		}

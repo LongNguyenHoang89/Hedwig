@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import fi.aalto.cse.harry.controller.DroneMovementCommmandGenerator;
 import fi.aalto.cse.harry.imageprocessing.StripRecognizer;
 import fi.aalto.cse.harry.structure.ImageQueue;
 import fi.aalto.cse.harry.structure.RectangleDimensionsQueue;

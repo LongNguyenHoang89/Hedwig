@@ -30,7 +30,7 @@ public class Main {
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) {	
 	EventQueue.invokeLater(new Runnable() {
 	    public void run() {
 		try {
@@ -47,8 +47,10 @@ public class Main {
      * Create the application.
      */
     public Main() {
+	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	initialize();
 	initSocket();
+	//initTestCommand();
     }
 
     /**
@@ -158,6 +160,6 @@ public class Main {
      */
     private void initTestCommand() {
 	// Init command factory
-	//new Thread(new TestControlThread(CommandFactory.getInstance())).start();
+	new Thread(new TestControlThread(CommandFactory.getInstance())).start();
     }
 }

@@ -41,9 +41,10 @@ public class VideoStageView extends SurfaceView implements
     protected void onDraw(Canvas canvas) {
 	if (renderer != null) {
 	    renderer.onDrawFrame(canvas);
-	} else
+	} else {
 	    super.onDraw(canvas);
-
+	}
+	
 	if (SHOW_FPS) {
 	    now = System.currentTimeMillis();
 	    canvas.drawText(framesCountAvg + " fps", 80, 70, fpsPaint);
@@ -91,7 +92,7 @@ public class VideoStageView extends SurfaceView implements
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-	
+
 	invalidateThread = new DrawThread(getHolder(), this);
 	invalidateThread.setRunning(true);
 	invalidateThread.start();

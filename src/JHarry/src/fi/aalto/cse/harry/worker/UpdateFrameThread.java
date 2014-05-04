@@ -11,31 +11,32 @@ import fi.aalto.cse.harry.ui.ImagePanel;
  * 
  */
 public class UpdateFrameThread implements Runnable {
-	private ImageQueue imageQueue;
+    private ImageQueue imageQueue;
 
-	public UpdateFrameThread(ImagePanel panel) {		
-		imageQueue = ImageQueue.getInstance();		
-		// Just to initialize ImageExporterExecutor and DisplayImageInPanelExecutor
-		StripRecognitionExecutor.initialize();
-		DisplayImageInPanelExecutor.initialize(panel);
-	}
+    public UpdateFrameThread(ImagePanel panel) {
+	imageQueue = ImageQueue.getInstance();
+	// Just to initialize ImageExporterExecutor and
+	// DisplayImageInPanelExecutor
+	ColorBlobRecognitionExecutor.initialize();
+	DisplayImageInPanelExecutor.initialize(panel);
+    }
 
-	@Override
-	public void run() {
-		try {
-			StreamingServer server = new StreamingServer(
-					Constants.VIDEO_SOCKET_PORT);
-			while (true) {
-				if (server.in.available() != 0) {
-					BufferedImage buf = server.ReadImage();
-					if (buf != null) {
-						// Add image for rendering and face detection
-						imageQueue.addImage(buf);											
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+    @Override
+    public void run() {
+	try {
+	    StreamingServer server = new StreamingServer(
+		    Constants.VIDEO_SOCKET_PORT);
+	    while (true) {
+		if (server.in.available() != 0) {
+		    BufferedImage buf = server.ReadImage();
+		    if (buf != null) {
+			// Add image for rendering and face detection
+			imageQueue.addImage(buf);
+		    }
 		}
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
+    }
 }
